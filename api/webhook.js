@@ -12,9 +12,9 @@ export default async function handler(req, res) {
     let replyMessage = '抱歉，我不懂你的指令。';
 
     if (userMessage.includes('現在溫度')) {
-      replyMessage = `目前溫度是🌡️ ${temperature}°C`;
+      replyMessage = `目前的溫度是🌡️ ${temperature}°C`;
     } else if (userMessage.includes('現在濕度')) {
-      replyMessage = `目前濕度是💧 ${humidity}%`;
+      replyMessage = `目前的濕度是💧 ${humidity}%`;
     }
 
     // 回覆用戶訊息

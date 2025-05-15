@@ -27,7 +27,6 @@ export default async function handler(req, res) {
   }
 
   const userMessage = event.message.text;
-
   if (typeof userMessage !== 'string') {
     console.log('userMessage 不是字串:', userMessage);
     return res.status(200).send('OK');
@@ -38,10 +37,23 @@ export default async function handler(req, res) {
 
   let replyMessage = '抱歉，我不懂你的指令。';
 
+  const tempReplies = [
+    `🌡️ 現在溫度大約是 ${temperature}°C，記得多喝水喔！`,
+    `嘿～溫度來囉！現在是 ${temperature}°C，感覺怎麼樣？`,
+    `報告！溫度目前是 ${temperature}°C，適合休息一下😌`,
+  ];
+
+  const humidityReplies = [
+    `💧 濕度是 ${humidity}%，空氣不乾燥，真棒！`,
+    `濕度報告：${humidity}%，適合植物生長唷🌿`,
+    `現在濕度有 ${humidity}%，小心不要太潮濕囉～`,
+  ];
+
   if (userMessage.includes('現在溫度')) {
-    replyMessage = `目前溫度是 ${temperature}°C`;
+    // 從回覆陣列隨機挑一句
+    replyMessage = tempReplies[Math.floor(Math.random() * tempReplies.length)];
   } else if (userMessage.includes('現在濕度')) {
-    replyMessage = `目前濕度是 ${humidity}%`;
+    replyMessage = humidityReplies[Math.floor(Math.random() * humidityReplies.length)];
   }
 
   try {

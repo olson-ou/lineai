@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/soil", "destination": "/api/soilmoisture" }
+  ]
+}

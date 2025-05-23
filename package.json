@@ -1,0 +1,12 @@
+{
+  "name": "lineai-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.10.1"
+  }
+}

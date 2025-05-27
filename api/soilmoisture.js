@@ -1,5 +1,5 @@
 // 匯入 Firebase Admin SDK 初始化（需有 lib/firebaseAdmin.js）
-import { db } from '../../lib/firebaseAdmin.js';
+import { db } from '../lib/firebaseAdmin.js';
 
 export default async function handler(req, res) {
   try {

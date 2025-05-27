@@ -1,4 +1,4 @@
-import { getSoilMoisture } from '../utils/dataStore.js';
+import { getSoilMoisture } from '../api/soilmoisture.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();

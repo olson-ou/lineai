@@ -1,20 +1,32 @@
-import { setSoilMoisture, getSoilMoisture } from '../utils/dataStore.js';
+// 匯入 Firebase Admin SDK 初始化（需有 lib/firebaseAdmin.js）
+import { db } from '../../lib/firebaseAdmin.js';
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { soil } = req.body;
-    if (soil !== undefined) {
-      setSoilMoisture(soil);
-      console.log("接收到土壤濕度：", soil);
-      return res.status(200).json({ message: "儲存成功" });
+  try {
+    if (req.method === 'POST') {
+      const { soil } = req.body;
+      if (soil !== undefined) {
+        const timestamp = Date.now();
+
+        // 寫入 Realtime Database
+        await db.ref('soilData').push({ soil, timestamp });
+
+        console.log("✅ 接收到土壤濕度：", soil);
+        return res.status(200).json({ message: "儲存成功" });
+      }
+      return res.status(400).json({ error: "缺少 soil 欄位" });
     }
-    return res.status(400).json({ error: "缺少 soil 欄位" });
-  }
 
-  if (req.method === 'GET') {
-    const value = getSoilMoisture();
-    return res.status(200).json({ soil: value });
-  }
+    if (req.method === 'GET') {
+      const snapshot = await db.ref('soilData').limitToLast(1).once('value');
+      const latestData = Object.values(snapshot.val() || {})[0];
 
-  res.status(405).json({ error: "方法不允許" });
+      return res.status(200).json({ soil: latestData?.soil ?? null });
+    }
+
+    res.status(405).json({ error: "方法不允許" });
+  } catch (error) {
+    console.error('🔥 發生錯誤:', error);
+    return res.status(500).json({ error: error.message });
+  }
 }

@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/soil", "destination": "/api/soilmoisture" }
+    { "source": "/sensor", "destination": "/api/sensorData" }
   ]
 }

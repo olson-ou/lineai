@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     let replyMsg = '請問您想查詢什麼？';
 
     if (messageText.includes('濕度')) {
-      const value = await getsensorData();  // ✅ 這裡要加 await
+      const value = await getSensorData();  // ✅ 這裡要加 await
       replyMsg = (value !== null && !isNaN(value))
         ? `目前土壤濕度為：${value.toFixed(1)}%`
         : '目前尚未接收到濕度資料';

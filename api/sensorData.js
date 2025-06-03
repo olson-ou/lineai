@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         hour12: false
          });
         // 寫入 Realtime Database
-        await db.ref('soilData').push({ soil, timestamp, formattedTime });
+        await db.ref('sensorData').push({ soil, timestamp, formattedTime });
 
         console.log("✅ 接收到土壤濕度：", soil);
         return res.status(200).json({ message: "儲存成功" });
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      const snapshot = await db.ref('soilData').limitToLast(1).once('value');
+      const snapshot = await db.ref('sensorData').limitToLast(1).once('value');
       const latestData = Object.values(snapshot.val() || {})[0];
 
         return res.status(200).json({

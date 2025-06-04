@@ -8,9 +8,10 @@ export default async function handler(req, res) {
       if (soil !== undefined) {
         const timestamp = Date.now();
         const formattedTime = new Date(timestamp).toLocaleString('zh-TW', {
-        timeZone: 'Asia/Taipei',
-        hour12: false
-         });
+          timeZone: 'Asia/Taipei',
+          hour12: false
+        });
+
         // 寫入 Realtime Database
         await db.ref('sensorData').push({ soil, timestamp, formattedTime });
 
@@ -24,10 +25,33 @@ export default async function handler(req, res) {
       const snapshot = await db.ref('sensorData').limitToLast(1).once('value');
       const latestData = Object.values(snapshot.val() || {})[0];
 
+      if (latestData && latestData.timestamp) {
+        const currentTime = Date.now();
+        const dataAge = currentTime - latestData.timestamp;
+        const maxAge = 5 * 60 * 1000; // 5分鐘（300,000 毫秒）
+
+        if (dataAge <= maxAge) {
+          // ✅ 資料在有效期內
+          return res.status(200).json({
+            soil: latestData.soil,
+            formattedTime: latestData.formattedTime
+          });
+        } else {
+          // ❌ 資料過期
+          return res.status(200).json({
+            soil: null,
+            formattedTime: null,
+            message: '資料已過期'
+          });
+        }
+      } else {
+        // 沒有任何資料
         return res.status(200).json({
-        soil: latestData?.soil ?? null,
-        formattedTime: latestData?.formattedTime ?? null
-      });
+          soil: null,
+          formattedTime: null,
+          message: '尚未接收到任何資料'
+        });
+      }
     }
 
     res.status(405).json({ error: "方法不允許" });

@@ -28,8 +28,12 @@ export default async function handler(req, res) {
           + `土壤濕度：${data.soil ?? '無'}%\n`
           + `環境溫度：${data.temperature ?? '無'}°C\n`
           + `環境濕度：${data.humidity ?? '無'}%\n`
+          + `pH 值：${data.ph ?? '無'}\n`
+          + `CO₂ 狀態：${data.co2Status ?? '無'}\n`
+          + `光照狀態：${data.lightStatus ?? '無'}\n`
           + `灑水狀態：${data.motorStatus}\n`
-          + `更新時間：${data.formattedTime}`;
+          + `風扇狀態：${data.fanStatus ?? '無'}\n`
+          + `更新時間：${data.formattedTime}`;      
       }
     }
 

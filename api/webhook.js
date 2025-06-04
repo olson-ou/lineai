@@ -1,4 +1,4 @@
-import { getSensorData } from '../lib/getSensorData.js'; 
+import { getSensorData } from '../lib/getSensorData.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -12,11 +12,26 @@ export default async function handler(req, res) {
 
     let replyMsg = '請問您想查詢什麼？';
 
-    if (messageText.includes('濕度')) {
-      const value = await getSensorData();  // ✅ 這裡要加 await
-      replyMsg = (value !== null && !isNaN(value))
-        ? `目前土壤濕度為：${value.toFixed(1)}%`
-        : '目前尚未接收到濕度資料';
+    // 預設農場為 farm1，可根據訊息文字切換
+    let farmId = 'farm1';
+    const matchFarm = messageText.match(/farm(\d+)/i);
+    if (matchFarm) farmId = `farm${matchFarm[1]}`;
+
+    if (messageText.includes('濕度') || messageText.includes('查詢')) {
+      const data = await getSensorData(farmId);
+
+      if (!data) {
+        replyMsg = `❌ 找不到 ${farmId} 的資料`;
+      } else if (data.expired) {
+        replyMsg = `⚠️ ${farmId} 的資料已過期（最後更新於 ${data.formattedTime}）`;
+      } else {
+        replyMsg = `🌱 ${farmId} 感測資料如下：\n`
+          + `土壤濕度：${data.soil ?? '無'}%\n`
+          + `溫度：${data.temperature ?? '無'}°C\n`
+          + `濕度：${data.humidity ?? '無'}%\n`
+          + `馬達狀態：${data.motorStatus}\n`
+          + `更新時間：${data.formattedTime}`;
+      }
     }
 
     // 回傳給 LINE

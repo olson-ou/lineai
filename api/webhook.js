@@ -10,14 +10,13 @@ export default async function handler(req, res) {
     const replyToken = events[0].replyToken;
     const messageText = events[0].message?.text || '';
 
-    let replyMsg = '請問您想查詢什麼？';
+    let replyMsg = '請問您想查詢什麼？(ex:農場1狀況,請輸入"farm1")';
 
     // 預設農場為 farm1，可根據訊息文字切換
     let farmId = 'farm1';
     const matchFarm = messageText.match(/farm(\d+)/i);
     if (matchFarm) farmId = `farm${matchFarm[1]}`;
-
-    if (messageText.includes('濕度') || messageText.includes('查詢')) {
+    if (matchFarm || messageText.includes('濕度') || messageText.includes('查詢')) {
       const data = await getSensorData(farmId);
 
       if (!data) {
@@ -27,9 +26,9 @@ export default async function handler(req, res) {
       } else {
         replyMsg = `🌱 ${farmId} 感測資料如下：\n`
           + `土壤濕度：${data.soil ?? '無'}%\n`
-          + `溫度：${data.temperature ?? '無'}°C\n`
-          + `濕度：${data.humidity ?? '無'}%\n`
-          + `馬達狀態：${data.motorStatus}\n`
+          + `環境溫度：${data.temperature ?? '無'}°C\n`
+          + `環境濕度：${data.humidity ?? '無'}%\n`
+          + `灑水狀態：${data.motorStatus}\n`
           + `更新時間：${data.formattedTime}`;
       }
     }
